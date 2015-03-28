@@ -160,4 +160,76 @@ describe 'Expectation Matchers' do
 
   end
 
+  describe "other matchers" do
+    """
+    reading from:
+    https://www.relishapp.com/rspec/rspec-expectations/v/2-2/docs/matchers/match-matcher
+    https://www.relishapp.com/rspec/rspec-expectations/v/2-0/docs/matchers/type-check-matchers
+    https://www.relishapp.com/rspec/rspec-expectations/docs/built-in-matchers/respond-to-matcher
+    """
+
+    it "will match regular expressions on strings" do
+      str = 'some string here with some number 12'
+
+      expect(str).to match (/\d{2}/)
+      expect(str).not_to match (/\d{3}/)
+      expect(12).not_to match (/\d{2}/)
+
+    end
+
+    it "will match object types with instane and kind_of and with #respond_to" do
+
+      val = 123
+
+      expect(val).to be_instance_of(Fixnum)
+      expect(val).to be_kind_of(Fixnum)
+      expect(val).to be_a(Fixnum)
+
+      expect(val).to respond_to(:odd?)
+      expect(val).to respond_to(:to_s).with(1).argument
+
+    end
+
+  end
+
+  describe "composing matchers and compound expectations" do
+    """
+    reading from:
+    https://www.relishapp.com/rspec/rspec-expectations/v/3-2/docs/composing-matchers
+    https://relishapp.com/rspec/rspec-expectations/docs/compound-expectations
+    """
+
+    it 'will match when variables or object change' do
+      val = 'some string'
+
+      expect {val = 'other thing'}.to change{val}.
+      from(a_string_matching(/string/)).
+      to(a_string_matching(/thing/))
+
+
+      arr = [1,2,3]
+
+      expect { arr << 4}.to change(arr, :size).
+      from(3).
+      to(4)
+
+
+      expect(arr).to all( be < 5)
+
+    end
+
+    it 'will match using compound expectations' do
+
+      arr = [1,2,3]
+
+      expect(arr).to start_with(1).and end_with(3)
+      expect(arr).to end_with(3).and include(2)
+      expect(arr).to include(2).or (1231213123123)
+
+    end
+
+
+
+  end
+
 end
